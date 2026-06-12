@@ -36,7 +36,6 @@ This project helps users track their daily expenses in an easy and minimal way.
 
 ## 🌐 Live Demo
 
-If GitHub Pages is enabled:  
 `https://iqrailyas1409-rgb.github.io/expense_tracker/`
 
 ---
