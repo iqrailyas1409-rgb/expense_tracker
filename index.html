@@ -1,77 +1,170 @@
-import csv
-import os
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Expense Tracker</title>
 
-FILE_NAME = "expenses.csv"
+<style>
+body{
+    font-family: Arial, sans-serif;
+    margin:0;
+    background:#eaf2ff;
+    display:flex;
+    justify-content:center;
+    padding-top:40px;
+}
 
-# Create file if it doesn't exist
-if not os.path.exists(FILE_NAME):
-    with open(FILE_NAME, "w", newline="") as file:
-        writer = csv.writer(file)
-        writer.writerow(["Category", "Amount"])
+.container{
+    width:340px;
+    background:#ffffff;
+    border-radius:12px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+    padding:15px;
+    border-top:6px solid #1e3a8a;
+}
 
+h2{
+    text-align:center;
+    color:#1e3a8a;
+    margin-bottom:10px;
+}
 
-def add_expense():
-    category = input("Enter Expense Category: ")
-    amount = input("Enter Amount: ")
+.balance{
+    text-align:center;
+    font-size:18px;
+    margin:10px 0;
+    color:#0f172a;
+}
 
-    with open(FILE_NAME, "a", newline="") as file:
-        writer = csv.writer(file)
-        writer.writerow([category, amount])
+.box{
+    background:#dbeafe;
+    padding:10px;
+    border-radius:8px;
+    text-align:center;
+    font-size:14px;
+    color:#1e3a8a;
+    border:1px solid #93c5fd;
+    margin-bottom:10px;
+}
 
-    print("Expense added successfully!")
+input{
+    width:100%;
+    padding:8px;
+    margin:5px 0;
+    border:1px solid #93c5fd;
+    border-radius:6px;
+    outline:none;
+}
 
+button{
+    width:100%;
+    padding:8px;
+    background:#1e3a8a;
+    color:#fff;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+}
 
-def view_expenses():
-    print("\n----- Expense List -----")
+button:hover{
+    background:#2563eb;
+}
 
-    with open(FILE_NAME, "r") as file:
-        reader = csv.reader(file)
-        next(reader)
+ul{
+    list-style:none;
+    padding:0;
+    margin-top:10px;
+}
 
-        found = False
-        for row in reader:
-            found = True
-            print(f"Category: {row[0]} | Amount: ₹{row[1]}")
+li{
+    display:flex;
+    justify-content:space-between;
+    padding:8px;
+    border-bottom:1px solid #e5e7eb;
+    font-size:14px;
+}
 
-        if not found:
-            print("No expenses found.")
+.delete{
+    background:#2563eb;
+    color:#fff;
+    border:none;
+    padding:3px 6px;
+    border-radius:4px;
+    cursor:pointer;
+    font-size:12px;
+}
 
+.delete:hover{
+    background:#1e3a8a;
+}
+</style>
+</head>
 
-def total_expense():
-    total = 0
+<body>
 
-    with open(FILE_NAME, "r") as file:
-        reader = csv.reader(file)
-        next(reader)
+<div class="container">
+    <h2>Expense Tracker</h2>
 
-        for row in reader:
-            total += float(row[1])
+    <div class="balance">
+        Balance: ₹<span id="balance">0</span>
+    </div>
 
-    print(f"\nTotal Expenses: ₹{total}")
+    <div class="box">
+        Total Expenses: ₹<span id="expense">0</span>
+    </div>
 
+    <input type="text" id="desc" placeholder="Expense description">
+    <input type="number" id="amount" placeholder="Enter amount">
 
-while True:
-    print("\n===== EXPENSE TRACKER =====")
-    print("1. Add Expense")
-    print("2. View Expenses")
-    print("3. Calculate Total")
-    print("4. Exit")
+    <button onclick="addExpense()">Add Expense</button>
 
-    choice = input("Enter your choice: ")
+    <ul id="list"></ul>
+</div>
 
-    if choice == "1":
-        add_expense()
+<script>
+let balance = 0;
+let expense = 0;
 
-    elif choice == "2":
-        view_expenses()
+function addExpense(){
+    let desc = document.getElementById("desc").value;
+    let amount = Number(document.getElementById("amount").value);
 
-    elif choice == "3":
-        total_expense()
+    if(desc === "" || amount === ""){
+        alert("Fill both fields");
+        return;
+    }
 
-    elif choice == "4":
-        print("Thank you for using Expense Tracker!")
-        break
+    balance -= amount;
+    expense += amount;
 
-    else:
-        print("Invalid choice. Please try again.")
-        print("Expense Tracker")
+    update();
+
+    let li = document.createElement("li");
+    li.innerHTML = `
+        ${desc} - ₹${amount}
+        <button class="delete" onclick="removeItem(this, ${amount})">X</button>
+    `;
+
+    document.getElementById("list").appendChild(li);
+
+    document.getElementById("desc").value = "";
+    document.getElementById("amount").value = "";
+}
+
+function removeItem(btn, amount){
+    balance += amount;
+    expense -= amount;
+
+    btn.parentElement.remove();
+    update();
+}
+
+function update(){
+    document.getElementById("balance").innerText = balance;
+    document.getElementById("expense").innerText = expense;
+}
+</script>
+
+</body>
+</html>
